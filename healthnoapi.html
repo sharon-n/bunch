@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Symptom Checker</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #b7bdc4;
+    }
+    
+    a {
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    a:hover {
+      color: #000;
+      text-decoration: underline;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      border-radius: 5px;
+      background-color: #9b9393;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    h1 {
+      text-align: center;
+    }
+    
+    label {
+      font-weight: bold;
+    }
+    
+    textarea {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    #diagnosis {
+      margin-top: 20px;
+    }
+
+    /* Dark mode styles */
+    body.dark-mode {
+      background-color: #222; /* Dark background color */
+      color: #fff; /* Dark text color */
+    }
+
+    .dark-mode .container {
+      background-color: #333; /* Dark container background color */
+      color: #fff; /* Dark text color */
+    }
+  </style>
+</head>
+<body>
+  <a href="#" id="home-link">Home</a> <!-- Link to home page -->
+  <div class="container">
+    <h1>Symptom Checker</h1>
+    <form id="symptom-form">
+      <label for="symptoms">Enter your symptoms:</label><br>
+      <textarea id="symptoms" name="symptoms" rows="4" cols="50"></textarea><br>
+      <button type="submit" class="btn btn-primary">Check Symptoms</button>
+    </form>
+    <div id="diagnosis"></div>
+    <button onclick="toggleDarkMode()">Toggle Dark Mode</button> <!-- Button to toggle dark mode -->
+  </div>
+
+  <script>
+    // Function to toggle dark mode
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode'); // Toggle the dark-mode class on body
+    }
+
+   // Function to provide medical suggestions for diseases
+function getMedicalSuggestions() {
+  const medicalSuggestions = {
+    'migraine': 'Take painkillers and rest in a quiet, dark room.',
+    'tension headache': 'Apply heat or ice packs to the affected area and practice relaxation techniques.',
+    'sinusitis': 'Use saline nasal sprays or irrigation, and consider decongestants or antihistamines.',
+    'flu': 'Take over-the-counter flu medications, drink plenty of fluids, and get plenty of rest.',
+    'common cold': 'Take over-the-counter cold medications, drink plenty of fluids, and get plenty of rest.',
+    'infection': 'Consult a doctor for appropriate antibiotics or antiviral medications.',
+    'vertigo': 'Medications such as meclizine (Antivert) or dimenhydrinate (Dramamine) can help relieve symptoms of vertigo.',
+    'inner ear problems': 'Treatment may include antihistamines like diphenhydramine (Benadryl) or corticosteroids to reduce inflammation.',
+    'bronchitis': 'Depending on the severity, bronchodilators like albuterol may be prescribed to open airways, and antibiotics may be necessary if the cause is bacterial.',
+    'pneumonia': 'Antibiotics are usually prescribed, along with fever-reducing medications and plenty of rest.',
+    'heart failure': 'Medications such as ACE inhibitors, beta-blockers, and diuretics may be prescribed, along with lifestyle changes.',
+    'contact dermatitis': 'Avoid the irritant or allergen causing the reaction and use topical corticosteroids or antihistamines to reduce inflammation and itching.',
+    'eczema': 'Apply moisturizers regularly, use topical corticosteroids to reduce inflammation, and avoid triggers such as harsh soaps or irritants.',
+    'psoriasis': 'Treatments may include topical corticosteroids, vitamin D analogs, and immunomodulators, as well as light therapy or systemic medications.',
+    'gastroenteritis': 'Stay hydrated with oral rehydration solutions and avoid solid foods until vomiting and diarrhea have stopped. Antiemetics may help control nausea and vomiting.',
+    'food poisoning': 'Stay hydrated, rest, and avoid solid foods until symptoms subside. In severe cases, antibiotics may be prescribed.',
+    'nausea': 'Try over-the-counter antacids or antiemetics like ondansetron, and avoid spicy or greasy foods.',
+    'viral infection': 'Get plenty of rest, stay hydrated, and consider over-the-counter medications to relieve symptoms such as fever or cough.',
+    'heart attack': 'Call emergency services immediately and take aspirin if advised by a doctor. Treatment may include clot-busting drugs or angioplasty.',
+    'angina': 'Take nitroglycerin as prescribed and rest. Beta-blockers or calcium channel blockers may also be prescribed to reduce chest pain.',
+    'acid reflux': 'Take proton pump inhibitors (e.g., omeprazole) or H2 receptor blockers (e.g., ranitidine), and avoid trigger foods like spicy or acidic foods.',
+    'appendicitis': 'Seek immediate medical attention, as appendicitis typically requires surgery to remove the appendix.',
+    'gastritis': 'Avoid irritants like alcohol and NSAIDs, and consider medications to reduce stomach acid such as proton pump inhibitors or antacids.',
+    'IBS': 'Dietary changes such as increasing fiber intake or avoiding certain trigger foods may help, along with medications to control symptoms like antispasmodics or antidepressants.',
+    'arthritis': 'Take nonsteroidal anti-inflammatory drugs (NSAIDs) like ibuprofen, and consider disease-modifying antirheumatic drugs (DMARDs) or biologics for more severe cases.',
+    'bursitis': 'Rest the affected joint, apply ice packs, and take NSAIDs to reduce pain and inflammation.',
+    'gout': 'Take NSAIDs or colchicine to relieve pain during an acute attack, and consider medications to lower uric acid levels like allopurinol or probenecid.',
+    'sciatica': 'Apply heat or ice packs to the affected area, take NSAIDs to reduce inflammation, and consider physical therapy or steroid injections for severe cases.',
+    'herniated disc': 'Rest, apply ice or heat packs, and take NSAIDs to reduce inflammation. Physical therapy or steroid injections may be recommended for severe cases.',
+    'muscle strain': 'Rest the affected muscle, apply ice packs, and take NSAIDs to reduce pain and inflammation. Physical therapy may help with rehabilitation.',
+    'cataracts': 'Surgery is the only effective treatment for cataracts, but wearing sunglasses and using bright lighting may help manage symptoms.',
+    'glaucoma': 'Medications such as eye drops (e.g., prostaglandin analogs, beta blockers) or surgery may be recommended to lower intraocular pressure and prevent vision loss.',
+    'macular degeneration': 'There is no cure for macular degeneration, but treatments such as injections of anti-VEGF drugs or photodynamic therapy may help slow its progression.',
+    'ear infection': 'Take antibiotics as prescribed by a doctor, and consider over-the-counter pain relievers like acetaminophen or ibuprofen to alleviate discomfort.',
+    'otitis media': 'Treatment may include antibiotics, pain relievers, and ear drops to relieve pain and inflammation.',
+    'temporomandibular joint (TMJ) disorder': 'Apply heat or cold packs to the affected area, practice jaw exercises, and consider NSAIDs or muscle relaxants to reduce pain and inflammation.',
+    'cavity': 'See a dentist for treatment such as a filling or crown to repair the cavity, and practice good oral hygiene to prevent further decay.',
+    'gum disease': 'Treatment may include professional cleaning, scaling and root planing, antibiotics, and surgery in severe cases.',
+    'dental abscess': 'Seek immediate dental treatment, which may include draining the abscess, antibiotics, and possibly a root canal or tooth extraction.',
+    'anemia': 'Treatment depends on the underlying cause but may include iron supplements, vitamin B12 injections, or blood transfusions.',
+    'chronic fatigue syndrome': 'There is no cure for chronic fatigue syndrome, but treatments such as cognitive behavioral therapy, graded exercise therapy, and medications may help manage symptoms.',
+    'hypothyroidism': 'Take thyroid hormone replacement medication such as levothyroxine to restore hormone levels to normal.',
+    // Respiratory System
+    'allergic rhinitis': 'Take antihistamines like loratadine or cetirizine, and consider nasal corticosteroid sprays or decongestants for nasal congestion.',
+    // Digestive System
+    'intestinal obstruction': 'Seek immediate medical attention, as intestinal obstructions may require surgery to remove the blockage.',
+    'peptic ulcer': 'Take proton pump inhibitors or H2 receptor blockers to reduce stomach acid, and avoid irritants like alcohol and NSAIDs.',
+    'gallstones': 'Treatment may include medications to dissolve the stones, minimally invasive procedures like lithotripsy, or surgery to remove the gallbladder.',
+    // Nervous System
+    'meningitis': 'Seek immediate medical attention, as bacterial meningitis is a medical emergency and requires prompt treatment with antibiotics.',
+    'cluster headaches': 'Medications such as triptans, high-flow oxygen therapy, or preventive medications like verapamil or corticosteroids may be prescribed.',
+    // Skin
+    'hives': 'Take antihistamines like diphenhydramine or cetirizine, and avoid triggers like certain foods or medications if known.',
+    'dermatitis': 'Use topical corticosteroids or calcineurin inhibitors to reduce inflammation and itching, and avoid irritants or allergens that trigger flare-ups.',
+    'rosacea': 'Topical medications like metronidazole or azelaic acid may help reduce redness and inflammation, and oral antibiotics may be prescribed for more severe cases.',
+    'folliculitis': 'Apply warm compresses to the affected area, practice good hygiene, and use topical or oral antibiotics to clear up the infection.',
+    // Add more medication suggestions for other diseases here
+  };
+
+  return medicalSuggestions;
+}
+
+// Function to check symptoms and provide diagnosis
+document.getElementById('symptom-form').addEventListener('submit', function(event) {
+  event.preventDefault();
+  const symptoms = document.getElementById('symptoms').value.trim().toLowerCase();
+  let possibleDiseases = [];
+
+  // Define a dictionary of symptoms and possible diseases
+  const symptomDiseases = {
+    'headache': ['migraine', 'tension headache', 'sinusitis'],
+    'fever': ['flu', 'common cold', 'infection'],
+    'dizziness': ['vertigo', 'inner ear problems'],
+    'cough': ['common cold', 'bronchitis', 'pneumonia'],
+    'shortness of breath': ['asthma', 'pneumonia', 'heart failure'],
+    'rash': ['contact dermatitis', 'eczema', 'psoriasis'],
+    'nausea': ['gastroenteritis', 'food poisoning', 'migraine'],
+    'vomiting': ['gastroenteritis', 'food poisoning', 'viral infection'],
+    'chest pain': ['heart attack', 'angina', 'acid reflux'],
+    'abdominal pain': ['appendicitis', 'gastritis', 'IBS'],
+    'joint pain': ['arthritis', 'bursitis', 'gout'],
+    'back pain': ['sciatica', 'herniated disc', 'muscle strain'],
+    'vision changes': ['cataracts', 'glaucoma', 'macular degeneration'],
+    'ear pain': ['ear infection', 'otitis media', 'temporomandibular joint (TMJ) disorder'],
+    'toothache': ['cavity', 'gum disease', 'dental abscess'],
+    'fatigue': ['anemia', 'chronic fatigue syndrome', 'hypothyroidism'],
+    // Respiratory System
+    'runny or stuffy nose': ['common cold', 'sinusitis', 'allergic rhinitis'],
+    'sneezing': ['common cold', 'allergic rhinitis', 'sinusitis'],
+    'sore throat': ['common cold', 'pharyngitis', 'tonsillitis'],
+    'muscle or body aches': ['flu', 'common cold', 'fibromyalgia'],
+    'chills': ['flu', 'pneumonia', 'malaria'],
+    // Digestive System
+    'diarrhea': ['gastroenteritis', 'food poisoning', 'IBS'],
+    'abdominal cramps': ['gastroenteritis', 'food poisoning', 'intestinal obstruction'],
+    'heartburn': ['acid reflux', 'peptic ulcer', 'gallstones'],
+    // Musculoskeletal System
+    'swelling': ['arthritis', 'sprain', 'infection'],
+    // Nervous System
+    'sensitivity to light and sound': ['migraine', 'meningitis', 'cluster headaches'],
+    // Skin
+    'itchy skin': ['eczema', 'hives', 'dermatitis'],
+    'inflamed skin': ['eczema', 'contact dermatitis', 'psoriasis'],
+    'pimples': ['acne', 'rosacea', 'folliculitis'],
+    // Add more symptoms and possible diseases here, categorized by body part
+  };
+
+  // Check each symptom in the dictionary
+  for (const symptom in symptomDiseases) {
+    if (symptoms.includes(symptom)) {
+      possibleDiseases = possibleDiseases.concat(symptomDiseases[symptom]);
+    }
+  }
+
+  // Format the list of possible diseases and medication suggestions
+  let diagnosis = '';
+  if (possibleDiseases.length > 0) {
+    const possibleDiseaseStatement = `You may have ${possibleDiseases.join(' or ')}.`;
+    let medicationSuggestion = 'Medication suggestions:';
+    
+    // Add medication suggestions based on the diagnosis
+    possibleDiseases.forEach(disease => {
+      const suggestion = getMedicalSuggestions()[disease];
+      if (suggestion) {
+        medicationSuggestion += `\n- For ${disease}: ${suggestion}`;
+      } else {
+        medicationSuggestion += `\n- For ${disease}: Consult a doctor for appropriate medication.`;
+      }
+    });
+
+    diagnosis = `<p>${possibleDiseaseStatement}</p><p>${medicationSuggestion}</p><p>If symptoms persist, please consult a doctor.</p>`;
+  } else {
+    diagnosis = 'Your symptoms do not match any known condition. Please consult a doctor for proper diagnosis.';
+  }
+
+  document.getElementById('diagnosis').innerHTML = '<h2>Diagnosis</h2>' + diagnosis;
+});
+
+
+    // Function to navigate to home page
+    document.getElementById('home-link').addEventListener('click', function(event) {
+      event.preventDefault();
+      window.location.href = 'index.html';
+    });
+
+  </script>
+</body>
+</html>
