@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercise Finder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      border-radius: 5px;
+      background-color: #464141;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    h1 {
+      text-align: center;
+    }
+    
+    label {
+      font-weight: bold;
+    }
+    
+    input, select {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: white;
+      background-color: #007bff;
+    }
+    
+    button:hover {
+      background-color: #0069d9;
+    }
+    
+    button:active {
+      background-color: #0062cc;
+    }
+    
+    #exercise-list {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Exercise Finder</h1>
+    <label for="body-part">Enter Body Part:</label><br>
+    <input type="text" id="body-part" name="body-part" placeholder="e.g., biceps, triceps, chest, legs"><br>
+    <button onclick="fetchAndDisplayExercises()">Find Exercises</button>
+    <div id="exercise-list"></div>
+  </div>
+
+  <script>
+    async function fetchExerciseData(bodyPart) {
+      // Simulated response data
+      const responseData = {
+        "exercises": [
+          {"name": "Bicep Curl", "description": "An exercise for biceps", "bodyPart": "biceps"},
+          {"name": "Hammer Curl", "description": "Another exercise for biceps", "bodyPart": "biceps"},
+          {"name": "Tricep Dip", "description": "An exercise for triceps", "bodyPart": "triceps"},
+          {"name": "Tricep Kickback", "description": "Another exercise for triceps", "bodyPart": "triceps"},
+          {"name": "Push-up", "description": "An exercise for chest", "bodyPart": "chest"},
+          {"name": "Bench Press", "description": "Another exercise for chest", "bodyPart": "chest"},
+          {"name": "Squat", "description": "An exercise for legs", "bodyPart": "legs"},
+          {"name": "Deadlift", "description": "Another exercise for legs", "bodyPart": "legs"},
+          // Add more sample exercise data here for other body parts if needed
+        ]
+      };
+
+      // Simulate a delay to mimic API response time
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      return responseData.exercises.filter(exercise => exercise.bodyPart.toLowerCase().includes(bodyPart.toLowerCase()));
+    }
+
+    function displayExercises(exercises) {
+      const exerciseListDiv = document.getElementById('exercise-list');
+      exerciseListDiv.innerHTML = ''; // Clear previous exercise list
+
+      if (exercises.length === 0) {
+        exerciseListDiv.innerHTML = '<p>No exercises found for the entered body part.</p>';
+      } else {
+        const ul = document.createElement('ul');
+        exercises.forEach(exercise => {
+          const li = document.createElement('li');
+          li.textContent = `${exercise.name}: ${exercise.description}`;
+          ul.appendChild(li);
+        });
+        exerciseListDiv.appendChild(ul);
+      }
+    }
+
+    async function fetchAndDisplayExercises() {
+      const bodyPart = document.getElementById('body-part').value.trim();
+      try {
+        const exercises = await fetchExerciseData(bodyPart);
+        displayExercises(exercises);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
