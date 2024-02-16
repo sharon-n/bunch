@@ -1,0 +1,482 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="https://unpkg.com/pdf-lib@1.4.0"></script>
+    <script src="https://unpkg.com/downloadjs@1.4.7"></script>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;  
+          }
+          .nav{
+            padding: 0.5rem 1rem;
+            background:white;
+            border-bottom: 1px solid  rgb(245, 244, 244);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+          .logo{
+            font-size: 2rem;
+            color: rgb(182, 34, 34);
+          }
+          #convertBtn,#upload-msg,#download{
+            border: none;
+            outline: none;
+            background: rgb(89, 150, 248);
+            color: white;
+            border-radius: 0.2rem;
+            padding: 0.5rem 1rem;
+            font-size: 1.2rem;
+            margin-right: 2rem;
+          }
+          #download,#convertBtn{
+            display: none;
+          }
+          
+          .input-page{
+            position: relative;
+            top: 0;
+          }
+          .add-more-files{
+            width: 50vw;
+            border-radius: 0.3rem;
+            padding: 3rem;
+            margin:5rem auto;
+            text-align: center;
+            background: rgba(230, 230, 250, 0.13);
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+          }
+          .inp-container{
+            cursor: pointer;
+            position: relative;
+            box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(124, 124, 145, 0.1) 0px 16px 48px;
+            height: 15rem;
+            background: rgba(154, 127, 228, 0.068);
+            width: 15rem;
+            border-radius: 50%;
+            border: 1px dashed rgb(195, 193, 193);
+            margin: auto;
+            border-width: 0.15rem;
+          }
+          #upload-file{
+            opacity: 0;
+            display: block;
+            height: 16rem;
+            width: 100%;
+            position: absolute;
+            cursor: pointer;
+          }
+          .img-icon{
+            color:  rgba(128, 144, 238, 0.596);
+          }
+          #custom-file{
+            color: rgb(96, 102, 155);
+            position: relative;
+            top: 0.5rem;
+            padding: 0.5rem 0.8rem;
+            font-size: 1.1rem;
+            border-radius: 0.2rem;
+            font-weight: 600;
+          }
+          
+          span{
+            font-size: 1.45rem;
+          }
+          .drop{
+            margin-top: 3rem;
+            font-size: 1rem;
+            color: rgb(108, 107, 175);
+          }
+          
+          .pdf-page{
+            z-index:-1;
+            min-height: 90%;
+            width:100%;
+            display: none;
+            overflow: hidden;
+          }
+          .create-pdf{
+            position: relative;
+            padding: 1rem;
+            margin: auto;
+          }
+          .file-item{
+            padding: 0 1rem;
+            background: none;
+            text-align: center;
+            position: relative;
+            width: 10rem;
+            height: 16rem; 
+            text-align: center;
+            margin: 1rem;
+            display: inline-block;
+            transition: 0.3s all ease-in-out;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+          }
+          .modify button{
+            padding: 0.3rem;
+            font-size: 1rem;
+            color: rgb(250, 64, 64);
+            border-radius: 50%;
+          }
+          .img-container{   
+            width: 8.5rem;
+            margin: auto;
+            height: 11rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          #img{
+            position: relative;
+            max-width: 9rem;
+            max-height: 11rem;
+            background: white;
+            overflow: hidden;
+            box-sizing: border-box;
+            border: 0.1rem solid rgb(223, 222, 222);
+          }
+          .file-item button{
+            margin: 0 0.2rem;
+            background: none;
+            border: none;
+            outline: none;
+            font-size: 1.2rem;
+            transition: 0.3s all ease-in-out;
+            opacity: 0;
+            padding: 0.3rem 0.5rem;
+          
+          }
+          .file-item button:hover{
+            background: rgb(224, 248, 251);
+          }
+          .file-item:hover button{
+            opacity: 1;
+          }
+          .delete{
+            pointer-events: none;
+          }
+          #img-name{
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 8.5rem;
+            text-align: center;
+            margin: 1rem auto;
+          }
+          
+          .add-more-file{
+              padding: 0 1rem;
+              background: none;
+              text-align: center;
+              position: relative;
+              margin: 0.5rem;
+              display: inline-block;
+              transition: 0.3s all ease-in-out;   
+              width: 10rem;
+              height: 16rem; 
+              vertical-align: top;
+          }
+           .inp-cont{
+            display: flex;
+            flex-direction: column;
+            flex-flow: column-reverse;
+            border-radius: 50%;
+            position: relative;
+            text-align: center;
+            border: none;
+            background: rgb(241, 246, 246); 
+            width: 9rem;
+            height: 9rem;
+            margin: 3rem auto;
+          }
+          #inp{
+            opacity: 0;
+            display: block;
+            width: 9rem;
+            height: 9rem;
+            border-radius: 50%;
+            position: absolute;
+            cursor: pointer;
+          }
+          
+          .create-pdf .add-more-file p{
+            position: relative;
+            top: -3.5rem;
+          } 
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Img To PDF</title>
+</head>
+
+<body>
+    <div class="nav">
+        <span class="logo">
+            <i class="fa fa-file-pdf-o"></i> PDF
+        </span>
+        <div>
+            <button onclick="calcPdfSize(this)" id="convertBtn">SAVE AS PDF</button>
+            <button onclick="embedImages()" id="download">DOWNLOAD</button>
+            <button id="upload-msg" type="button" disabled="true">UPLOAD FILES</button>
+        </div>
+    </div>
+
+    <div class="input-page" id="input-page">
+        <!-- Your input page content here -->
+        <div class="choose-file">          
+            <div class="add-more-files">
+                <div class="inp-container">
+                    <input type="file" id="upload-file" onChange={encodeImageFileAsURL(this)} multiple accept="image/*"/>
+                    <h4 class="drop">
+                        DRAG & DROP OR
+                    </h4>
+                    <p >
+                        <i class="fa fa-file-image-o fa-4x img-icon"></i>
+                        
+                    </p>
+                    <label htmlFor="upload-file" id="custom-file">CHOOSE FILES</label>
+                </div>
+            </div>            
+        </div>
+    </div>
+
+    <div class="pdf-page" id="pdf-page">
+        <!-- Your PDF page content here -->
+        <div class="create-pdf" id="create-pdf"> 
+                    
+        </div>
+    </div>
+
+    <script>
+        var data= [];
+        var width= 620;
+        var height= 800;
+        var pdfName;
+        var fileName= '';
+
+        const createPDF= document.getElementById('create-pdf');
+
+        encodeImageFileAsURL= (element)=>{
+            document.getElementById('input-page').style.display= 'none';
+            document.getElementById('pdf-page').style.display= 'inline-block';
+
+            const length= element.files.length;
+            for(var i=0;i<length;i++){
+                let file= element.files[i];
+                let pdfname= element.files[0];
+                let reader= new FileReader();
+                reader.readAsDataURL(file);
+
+                let obj= {
+                    list: reader,
+                    fileName: file.name,
+                    time: new Date().toString() + i
+                }
+
+                reader.onloadend= ()=>{
+                    data= [...data,obj];
+                    pdfName= pdfname.name
+                }
+            }
+
+            setTimeout(convertToPDF,1000);
+            document.getElementById('upload-file').value= null;
+            setTimeout(saveAsPDF,1000);
+        }
+
+
+        saveAsPDF= ()=>{
+            document.getElementById('upload-msg').style.display= 'none';
+            document.getElementById('convertBtn').style.display= 'inline-block';
+        }
+
+
+        //delete item from pdf page
+        handleDelete= (e)=>{
+            data= data.filter((item)=>item.time!==e.currentTarget.id);
+            if(data.length==0){
+                location.reload();
+            }
+            else{
+                convertToPDF();
+            }
+        }
+
+
+        //initiate file downloading
+        embedImages= async ()=>{
+            const pdfDoc= await PDFLib.PDFDocument.create();
+            for(var i=0;i<data.length;i++){
+                const jpgUrl= data[i].list.result;
+                const jpgImageBytes= await fetch(jpgUrl).then((res) => res.arrayBuffer());
+
+                const jpgImage = await pdfDoc.embedJpg(jpgImageBytes);
+
+                //Add a blank page to the document
+                const page= pdfDoc.addPage();
+
+                //set page size
+                page.setSize(width,height);
+                page.drawImage(jpgImage, {
+                    x: 20,
+                    y: 50,
+                    width: page.getWidth()-40,
+                    height: page.getHeight()-100,
+                })
+            }
+
+            //save the padf pages
+            const pdfBytes= await pdfDoc.save();
+
+            //download pdf file 
+            download(pdfBytes, pdfName.slice(0,-4), "application/pdf");
+
+            //back to home page after downloading file
+            setTimeout(backToHomepage,1000);
+        }
+
+        //display pdf images
+        function convertToPDF(){
+            createPDF.innerHTML= '';
+            data.map((item,i)=>{
+                const fileItem= document.createElement('div');
+                fileItem.setAttribute('class','file-item');
+
+                const modify= document.createElement('div');
+                modify.setAttribute('class','modify');
+
+                const button2= document.createElement('button');
+                button2.setAttribute('class','delete-btn');
+                button2.setAttribute('id',item.time);
+                const remove= document.createElement('i');
+                remove.setAttribute('class','fa fa-trash');
+                button2.appendChild(remove);
+                button2.addEventListener('click',(e)=>{
+                    handleDelete(e);
+                });
+
+                modify.appendChild(button2);
+
+                fileItem.appendChild(modify);
+
+                const imgContainer= document.createElement('div');
+                imgContainer.setAttribute('class','img-container');
+                const img= document.createElement('img');
+                img.setAttribute('id','img');
+                img.src= item.list.result;
+                imgContainer.appendChild(img);
+                fileItem.appendChild(imgContainer);
+
+                const imgName= document
+                .createElement('p');
+                imgName.setAttribute('id','img-name');
+                imgName.innerHTML= item.fileName;
+                fileItem.appendChild(imgName);
+
+                //fileItem is the child of createPDF
+                createPDF.appendChild(fileItem);
+
+            });
+
+            const addMoreFile= document.createElement('div');
+            addMoreFile.setAttribute('class','add-more-file');
+
+            const addFile= document.createElement('div');
+            addFile.setAttribute('class','inp-cont');
+
+            const input= document.createElement('input');
+            input.setAttribute('id','inp');
+            input.type= 'file';
+            input.multiple= 'true';
+            input.onchange= function(){
+                encodeImageFileAsURL(this);
+            }
+
+            const p= document.createElement('p');
+            const i= document.createElement('i');
+            i.setAttribute('class','fa fa-plus');
+
+            p.appendChild(i);
+
+            const label= document.createElement('label');
+            label.htmlFor= 'inp';
+            label.innerHTML= 'Add Files';
+
+            addFile.appendChild(p);
+            addFile.appendChild(label);
+            addFile.appendChild(input);
+            
+            //addFile is the child of addMoreFile
+            addMoreFile.appendChild(addFile);
+
+            //addMoreFile is the child of createPDF
+            createPDF.appendChild(addMoreFile);
+        }
+
+        //back to home 
+        function backToHomepage(){
+            location.reload();
+        }
+
+        async function calcPdfSize(element) {
+          try {
+              const pdfDoc = await PDFLib.PDFDocument.create(); // Create a new PDF document
+      
+              // Loop through the data array to embed images into the PDF
+              for (let i = 0; i < data.length; i++) {
+                  const jpgUrl = data[i].list.result;
+                  const jpgImageBytes = await fetch(jpgUrl).then((res) => {
+                      if (!res.ok) {
+                          throw new Error("Failed to fetch image");
+                      }
+                      return res.arrayBuffer();
+                  });
+      
+                  const jpgImage = await pdfDoc.embedJpg(jpgImageBytes);
+      
+                  const page = pdfDoc.addPage(); // Add a new page to the PDF document
+      
+                  // Set page size and draw the image onto the page
+                  page.setSize(width, height);
+                  page.drawImage(jpgImage, {
+                      x: 20,
+                      y: 50,
+                      width: page.getWidth() - 40,
+                      height: page.getHeight() - 100,
+                  });
+              }
+      
+              // Save the PDF document to a byte array
+              const pdfBytes = await pdfDoc.save();
+      
+              // Download the PDF file
+              download(pdfBytes, pdfName.slice(0, -4), "application/pdf");
+      
+              // Clear the uploaded files and reset the UI
+              resetUI();
+          } catch (error) {
+              console.error("Error creating PDF:", error);
+              // Handle error, show an alert, or take appropriate action
+          }
+      }
+      
+      function resetUI() {
+        // Code to reset the user interface goes here
+        // For example, you can clear uploaded files and reset the display
+        data = []; // Clear the data array
+        document.getElementById('input-page').style.display = 'block';
+        document.getElementById('pdf-page').style.display = 'none';
+        document.getElementById('upload-file').value = null; // Clear the file input
+    }
+    
+      
+        
+    </script>
+</body>
+</html>
