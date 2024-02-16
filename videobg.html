@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Background</title>
+    <style>
+        /* google fonts style links */
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Kings&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
+        html,body{
+            height: 100%;
+        }
+        body{
+            background: rgba(0,0,0,0.2);
+        }
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        video{
+            object-fit: cover;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        .header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+        }
+        .logo{
+            font-size: 60px;
+            color: goldenrod;
+            font-family: 'Kings', sans-serif;
+            border-top: 5px solid goldenrod;
+            border-radius: 50%;
+        }
+        .options span{
+            color: white;
+            margin: 0 15px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 25px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .banner{
+            height: 100%;
+            position: relative;
+        }
+        .container{
+            position: absolute;
+            bottom: 0;
+            height: 60%;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+        }
+        .container p{
+            text-align: right;
+        }
+        .welcome{
+            font-size: 90px;
+            color: white;
+            font-weight: 400;
+            text-shadow: 1px 1px rgba(0,0,0,0.5);
+            font-family: 'Bebas Neue', cursive;
+        }
+        .place{
+            font-size: 60px;
+            color: gold;
+            position: relative;
+            bottom: 20px;
+            font-family: 'Kaushan Script', cursive;
+        }
+        button{
+            background: goldenrod;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            margin-top: 20px;
+            font-size: 25px;
+            cursor: pointer;
+            box-shadow: rgba(99,99,99,0.5) 0px 2px 8px 0px;
+        }
+    </style>
+</head>
+<body>
+    <video playsinline autoplay muted loop>
+        <source src="./sample.mp4" type="video/mp4">
+    </video>
+    <div class="banner">
+        <div class="header">
+            <p class="logo">tour.</p>
+            <div class="options">
+                <span>DESTINATIONS</span>
+                <span>HOTELS</span>
+                <span>PLAN</span>
+                <span>CONTACTS</span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="tag">
+                <h1 class="welcome">WELCOME TO YOUR NEW HOME.</h1>
+                <p class="place">New Island</p>
+                <button>EXPLORE NOW</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
